@@ -7,7 +7,7 @@ module.exports = {
 		.setName('updateplanetlist')
 		.setDescription('Updates the planet list JSON'),
 	async execute(interaction) {
-		fetch('https://helldiverstrainingmanual.com/api/v1/war/major-orders')
+		fetch('https://helldiverstrainingmanual.com/api/v1/planets')
 		.then(response => response.json())
 		.then(json => {
 			fs.writeFile('./jsondata/planets.json', JSON.stringify(json), err => {
@@ -20,4 +20,4 @@ module.exports = {
 		.catch(error => console.error('Error:', error));
 		await interaction.reply(`JSON Updated. Thanks`);
 	}
-	};
+};
