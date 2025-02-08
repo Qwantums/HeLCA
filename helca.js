@@ -60,11 +60,11 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 //JSON updater
-function getWars() {
+function getAPI() {
 	fetch('https://helldiverstrainingmanual.com/api/v1/war/campaign')
 	.then(response => response.json())
 	.then(json => {
-		fs.writeFile('./activecampaigns.json', JSON.stringify(json), err => {
+		fs.writeFile('./jsondata/activecampaigns.json', JSON.stringify(json), err => {
 			if (err) {
 				throw new Error('Something went wrong.')
 			}
@@ -74,4 +74,4 @@ function getWars() {
 	.catch(error => console.error('Error:', error));
 }
 
-setInterval(getWars,300000)
+setInterval(getAPI,300000)
