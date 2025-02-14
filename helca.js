@@ -36,6 +36,7 @@ for (const folder of commandFolders) {
 	}
 }
 
+//Command Handler (with error handler)
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
@@ -48,8 +49,8 @@ client.on(Events.InteractionCreate, async interaction => {
 
 	try {
 		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
+	} catch (err) {
+		console.error(err);
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
 				content: 'There was an error while executing this command!',
@@ -63,3 +64,31 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
+
+//Auto War Updater
+const updaterInterval = 300000;
+
+async function warStatusUpdate() {
+	const apiURL = `https://api.helldivers2.dev/raw/api/WarSeason/801/Status`;
+	try {
+		const data = await fetch(apiURL,  {
+			headers: {
+				'accept': 'application/json',
+				'X-Super-Client': process.env.IDENTIFIER,
+				'X-Super-Contact': process.env.CONTACT
+			}})
+		if (!response.ok) {
+			throw new Error(`Response status: ${response.status}`);
+		}
+		const json = await data.json();
+		try {
+			fs.writeFile(`./warstatus.json`, JSON.stringify(json));
+		} catch (err) {
+			console.error(`Could not save /warstatus.json`)
+		}
+	} catch (err) {
+		console.error(error.message);
+	}
+}
+
+setInterval(warStatusUpdate, updaterInterval)
