@@ -8,14 +8,14 @@ dotenv.config();
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, readyClient => {
+client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
 // Log in to Discord with your client's token
 client.login(process.env.DISCORD_TOKEN);
 
-//Command Parser
+//	Command Parser
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
@@ -36,8 +36,8 @@ for (const folder of commandFolders) {
 	}
 }
 
-//Command Handler (with error handler)
-client.on(Events.InteractionCreate, async interaction => {
+//	Command Handler (with error handler)
+client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
@@ -54,41 +54,37 @@ client.on(Events.InteractionCreate, async interaction => {
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
 				content: 'There was an error while executing this command!',
-				ephemeral: true
+				ephemeral: true,
 			});
 		} else {
 			await interaction.reply({
 				content: 'There was an error while executing this command!',
-				ephemeral: true
+				ephemeral: true,
 			});
 		}
 	}
 });
 
-//Auto War Updater
-const updaterInterval = 300000;
-
+//	Auto War Updater (want to move to own .js file)
 async function warStatusUpdate() {
-	const apiURL = `https://api.helldivers2.dev/raw/api/WarSeason/801/Status`;
+	const apiURL = 'https://api.helldivers2.dev/raw/api/WarSeason/801/Status';
 	try {
-		const data = await fetch(apiURL,  {
+		const data = await fetch(apiURL, {
 			headers: {
 				'accept': 'application/json',
 				'X-Super-Client': process.env.IDENTIFIER,
-				'X-Super-Contact': process.env.CONTACT
-			}})
+				'X-Super-Contact': process.env.CONTACT,
+			} });
 		if (!response.ok) {
 			throw new Error(`Response status: ${response.status}`);
 		}
 		const json = await data.json();
-		try {
-			fs.writeFile(`./warstatus.json`, JSON.stringify(json));
-		} catch (err) {
-			console.error(`Could not save /warstatus.json`)
-		}
+		fs.writeFile('./warstatus.json', JSON.stringify(json));
+
 	} catch (err) {
-		console.error(error.message);
+		console.error(err.message);
 	}
 }
-
-setInterval(warStatusUpdate, updaterInterval)
+//	this part stays tho
+const updaterInterval = 300000;
+setInterval(warStatusUpdate, updaterInterval);
