@@ -1,3 +1,4 @@
 node_modules
 .env
-jsondata
+squads.json
+users.json
