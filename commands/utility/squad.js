@@ -24,7 +24,7 @@ module.exports = {
 				.setName('create')
 				.setDescription('Creates a new Squadron')
 				.addStringOption(option =>
-					 option
+					option
 						.setName('name')
 						.setDescription('The display name of your Squadron')
 						.setMaxLength(15)
@@ -44,30 +44,26 @@ module.exports = {
 	async execute(interaction) {
 		//	Info
 		const usersJSON = JSON.parse(fs.readFileSync('./users.json'));
+		if (!usersJSON) {
+			throw new Error('/users.json could not be read');
+		}
+		const jsonSquad = JSON.parse(fs.readFileSync('./squads.json'));
+		if (!jsonSquad) {
+			throw new Error('/squads.json could not be read');
+		}
 		if (interaction.options.getSubcommand() === 'info') {
-			console.log('Reading squads.json...');
-			const jsonSquad = JSON.parse(fs.readFileSync('./squads.json'));
-			if (!jsonSquad) {
-				throw new Error('/squads.json could not be read');
-			} else {
-				console.log('Done!');
-				const autoFinder = usersJSON
-					.find(item => item.name === interaction.user.username);
-				const squadFinder = jsonSquad
-					.find(item => item.name === (interaction.options.getString('squad') ?? autoFinder.squad));
-				await interaction.reply(`Name: ${squadFinder.name}\nDescription: ${squadFinder.description}\nCommander: ${squadFinder.commander}\nMembers: ${squadFinder.members}`);
-			}
+			const autoFinder = usersJSON
+				.find(item => item.name === interaction.user.username);
+			const squadFinder = jsonSquad
+				.find(item => item.name === (interaction.options.getString('squad') ?? autoFinder.squad));
+			await interaction.reply(`Name: ${squadFinder.name}\nDescription: ${squadFinder.description}\nCommander: ${squadFinder.commander}\nMembers: ${squadFinder.members}`);
 		//	Create
 		} else if (interaction.options.getSubcommand() === 'create') {
 			//	check if user is already in squad
 			const userFinder = usersJSON
 				.find(item => item.name === interaction.user.username);
-			if (!usersJSON) {
-				throw new Error('/users.json could not be read');
-			} else if (!userFinder) {
+			if (!userFinder) {
 				//	read json
-				console.log('Reading squads.json...');
-				const squadsJSON = JSON.parse(fs.readFileSync('./squads.json'));
 				const squadCount = squadsJSON.length;
 				if (!squadsJSON) {
 					throw new Error('/squads.json could not be read');
@@ -83,14 +79,16 @@ module.exports = {
 						commander: interaction.user.username,
 						fleet: 'N/A',
 						id: squadCount + 1,
+						vote: null,
 					};
 					//	Add squad to database
 					squadsJSON.push(squad);
 					try {
 						fs.writeFileSync('./squads.json', JSON.stringify(squadsJSON));
 					} catch (err) {
-						console.error('Could not save /squads.json');
-						await interaction.reply('Critical Error! Try again later');
+						console.error('Could not save /squads.json Error:', err);
+						await interaction.reply('Critical Error! Something really messed up');
+						return;
 					}
 					//	and user
 					const userCount = usersJSON.length;
@@ -101,12 +99,14 @@ module.exports = {
 							name: interaction.user.username,
 							squad: squad.name,
 							id: userCount + 1,
+							vote: null,
 						};
 						usersJSON.push(user);
 						try {
 							fs.writeFileSync('./users.json', JSON.stringify(usersJSON));
 						} catch (err) {
-							console.error('Error adding user to database:', err);
+							console.error('Could not save /users.json. Error:', err);
+							await interaction.reply('Critical Error! Something really messed up');
 							return;
 						}
 					}
