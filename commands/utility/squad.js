@@ -52,10 +52,8 @@ module.exports = {
 			throw new Error('/squads.json could not be read');
 		}
 		if (interaction.options.getSubcommand() === 'info') {
-			const autoFinder = usersJSON
-				.find(item => item.name === interaction.user.username);
-			const squadFinder = jsonSquad
-				.find(item => item.name === (interaction.options.getString('squad') ?? autoFinder.squad));
+			const autoFinder = usersJSON.find(item => item.name === interaction.user.username);
+			const squadFinder = jsonSquad.find(item => item.name === (interaction.options.getString('squad') ?? autoFinder.squad));
 			await interaction.reply(`Name: ${squadFinder.name}\nDescription: ${squadFinder.description}\nCommander: ${squadFinder.commander}\nMembers: ${squadFinder.members}`);
 		//	Create
 		} else if (interaction.options.getSubcommand() === 'create') {
