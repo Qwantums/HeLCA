@@ -16,7 +16,7 @@ module.exports.grabAPI = async function(url = new String, name = new String) {
         }
         const json = await response.json();
         const stringyJson = JSON.stringify(json);
-        fs.writeFile(`./data/${name}.json`, stringyJson, function(err) {
+        fs.writeFile(`./data/api/${name}.json`, stringyJson, function(err) {
             if (err) {
                 throw new Error(`Couldn't save ${name}.json... trying again later`);
             }

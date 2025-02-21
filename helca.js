@@ -2,8 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
-const backup = require('./backup.cjs');
-const grabber = require('./apiGrabber.cjs');
+const backup = require('./tools/backup.cjs');
+const grabber = require('./tools/apiGrabber.cjs');
 
 dotenv.config();
 
@@ -47,12 +47,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
         console.error(err);
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({
-                content: 'There was an error while executing this command!',
+                content: 'Communist Automata are sapping my CPU! Error...',
                 ephemeral: true,
             });
         } else {
             await interaction.reply({
-                content: 'There was an error while executing this command!',
+                content: 'Facist Termanids are chewing threw my wiring! Error...',
                 ephemeral: true,
             });
         }

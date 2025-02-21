@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('citizens')
+        .setName('recruits')
         .setDescription('Planet statistics')
         /*.addSubcommandGroup(options =>
             options.addSubcommand(option =>
