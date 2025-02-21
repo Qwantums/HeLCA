@@ -50,7 +50,7 @@ module.exports = {
                 home: planet
             };
             const planetObj = await parsedArray.find(obj => obj.name === planet);
-            const newArrayUser = { userId };
+            const newArrayUser = newUserUser.helcaId ;
             await parsedUsers.push(newUserUser);
             await planetObj['declaredHome'].push(newArrayUser);
             const updatedUsers = JSON.stringify(parsedUsers);
@@ -69,7 +69,13 @@ module.exports = {
                 }
             });
             console.log('Saved users.json!');
+            const length = parsedUsers.length;
             await interaction.editReply(`Homeworld set to ${interaction.options.getString('planet')}! Have a democratic day!`);
+            if (planetObj['declaredHome'].length > 1) {
+                await interaction.followUp(`Congratulation Conscript #${length} on registering with HeLCA! We hope to continue to service all your democratic needs.`);
+            } else {
+                await interaction.followUp(`Congratulations Conscript #${length}! You are the first Helldiver from ${planetObj.name} registered with HeLCA. We hope to continue to service all your democratic needs.`);
+            }
             const end = Date.now();
             const delta = end - start;
             console.log(`Done! Time elapsed: ${delta}ms`);
