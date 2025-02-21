@@ -4,11 +4,12 @@
   "description": "Helldivers Liberation Coordination Assistant",
   "main": "index.js",
   "scripts": {
-    "start":"node helca.js"
+    "start": "node helca.js"
   },
   "author": "Qwantums",
   "license": "ISC",
   "dependencies": {
+    "bson": "^6.10.3",
     "discord.js": "^14.17.3",
     "dotenv": "^16.4.7",
     "node-fetch": "^3.3.2"
