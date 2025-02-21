@@ -72,9 +72,9 @@ module.exports = {
             const length = parsedUsers.length;
             await interaction.editReply(`Homeworld set to ${interaction.options.getString('planet')}! Have a democratic day!`);
             if (planetObj['declaredHome'].length > 1) {
-                await interaction.followUp(`Congratulation Conscript #${length} on registering with HeLCA! We hope to continue to service all your democratic needs.`);
+                await interaction.followUp(`## Congratulation Conscript #${length} on registering with HeCLA!\n### We hope to continue to service all your democratic needs.`);
             } else {
-                await interaction.followUp(`Congratulations Conscript #${length}! You are the first Helldiver from ${planetObj.name} registered with HeLCA. We hope to continue to service all your democratic needs.`);
+                await interaction.followUp(`## Congratulations Conscript #${length}!\n### You are the first Helldiver from **${planetObj.name}** registered with HeLCA. We hope to continue to service all your democratic needs.`);
             }
             const end = Date.now();
             const delta = end - start;

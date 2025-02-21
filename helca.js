@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
+const backup = require('./backup.cjs');
 
 dotenv.config();
 
@@ -58,31 +59,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 //  Autosave
-setInterval(autoSave, 1800000);
-
-async function autoSave() {
-    const dataPath = path.join(__dirname, 'data');
-    const dataFile = fs.readdirSync(dataPath).filter(file => file.endsWith('.json'));
-    try {
-        for (const file of dataFile) {
-            const filePath = path.join(dataPath, file);
-            const backFolderPath = path.join(dataPath, 'backup');
-            const data = fs.readFile(filePath, 'utf-8', (err) => {
-                if (err) {
-                    throw new Error(`Couldn't read ${filePath}...`, err);
-                }
-            });
-            const backPath = path.join(backFolderPath, file);
-            fs.writeFile(backPath, data, (err) => {
-                if (err) {
-                    throw new Error(`Couldn't read ${filePath}...`, err);
-                }
-            });
-        }
-    } catch (err) {
-        console.error('Error:', err);
-    }
-};
+setInterval(backup.autoSave(), 1800000);
 
 /*  API Grabber (unneeded atm)
 async function getData(url = new String, name = new String) {
