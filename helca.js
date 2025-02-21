@@ -3,6 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
 const backup = require('./backup.cjs');
+const grabber = require('./apiGrabber.cjs');
 
 dotenv.config();
 
@@ -61,46 +62,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
 //  Autosave
 setInterval(backup.autoSave(), 1800000);
 
-/*  API Grabber (unneeded atm)
-async function getData(url = new String, name = new String) {
-    try {
-        const start = Date.now();
-        console.log(`Attempting to contact ${url} to get ${name}.json`);
-        const response = await fetch(url, {
-            headers: {
-                'accept': 'application/json',
-                'X-Super-Client': process.env.IDENTIFIER,
-                'X-Super-Contact': process.env.CONTACT,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-        const json = await response.json();
-        const stringyJson = JSON.stringify(json);
-        fs.writeFile(`./data/${name}.json`, stringyJson, function(err) {
-            if (err) {
-                throw new Error(`Couldn't save ${name}.json... trying again later`);
-            }
-        });
-        const end = Date.now();
-        const delta = end - start;
-        console.log(`Saved ${name}.json in data folder... Elapsed Time: ${delta}ms`);
-    } catch (err) {
-        console.error(err);
-    }
-};
+//  API Grabber
 const timer = 900000;
 //  Invasions
-getData('https://api.helldivers2.dev/api/v1/planet-events', 'events');
-setInterval(() => getData('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer);
-//  Liberations
-getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns');
-setInterval(() => getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns'), timer);
+grabber.getData('https://api.helldivers2.dev/api/v1/planet-events', 'events');
+setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer);
+/*  Liberations
+grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns');
+setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns'), timer);
 //  Assignment Pop-Ups
-getData('https://api.helldivers2.dev/api/v1/assignments', 'assignments');
-setInterval(() => getData('https://api.helldivers2.dev/api/v1/assignments', 'assignments'), timer);
+grabber.getData('https://api.helldivers2.dev/api/v1/assignments', 'assignments');
+setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/assignments', 'assignments'), timer);
 //  Station Location
-getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations');
-setInterval(() => getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations'), timer);
+grabber.getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations');
+setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations'), timer);
 */
