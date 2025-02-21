@@ -57,7 +57,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 });
 
-//  API Grabber
+/*  API Grabber (unneeded atm)
 async function getData(url = new String, name = new String) {
     try {
         const start = Date.now();
@@ -99,3 +99,4 @@ setInterval(() => getData('https://api.helldivers2.dev/api/v1/assignments', 'ass
 //  Station Location
 getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations');
 setInterval(() => getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations'), timer);
+*/
