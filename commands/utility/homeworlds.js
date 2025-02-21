@@ -31,8 +31,8 @@ module.exports = {
             throw new Error('Planet not found...');
         }
         //  Load users
-        const stringyId = interaction.user.id;
-        const userId = JSON.parse(stringyId);
+        const bigId = BigInt(interaction.user.id);
+        const userId = JSON.parse(bigId);
         const stringyUsers = fs.readFileSync('./data/users.json', 'utf-8', (err) => {
             if (err) {
                 interaction.editReply('Critical Error!');
