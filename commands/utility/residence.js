@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('homeworld')
+        .setName('residence')
         .setDescription('Which planet do you come from?')
         .addStringOption(option =>
             option.setName('planet')
@@ -15,10 +15,10 @@ module.exports = {
         //  Load Array
         const start = Date.now();
         await interaction.deferReply();
-        const stringyArray = fs.readFileSync('./data/homeworlds.json', 'utf-8', (err) => {
+        const stringyArray = fs.readFileSync('./data/worlds.json', 'utf-8', (err) => {
             if (err) {
                 interaction.editReply('Critical Error!');
-                throw new Error(`Couldn't read homeworlds.json...`, err);
+                throw new Error(`Couldn't read worlds.json...`, err);
             }
         });
         const parsedArray = JSON.parse(stringyArray);
@@ -39,10 +39,10 @@ module.exports = {
                 throw new Error(`Couldn't read users.json...`, err);
             }
         });
-        const parsedUsers = JSON.parse(stringyUsers);
+        const parsedUsers = await JSON.parse(stringyUsers);
         //  First time user
         if (parsedUsers.findIndex(user => user.discordId === userId) === -1) {
-            console.log(`${interaction.user.username} set a home planet for the first time!`);
+            console.log(`${interaction.user.username} set a planet of residence for the first time!`);
             const newUserUser = {
                 helcaId: parsedUsers.length + 1,
                 discordId: userId,
@@ -50,18 +50,19 @@ module.exports = {
                 home: planet
             };
             const planetObj = await parsedArray.find(obj => obj.name === planet);
-            const newArrayUser = newUserUser.helcaId ;
+            const newArrayUser = newUserUser[helcaId];
             await parsedUsers.push(newUserUser);
-            await planetObj['declaredHome'].push(newArrayUser);
+            await planetObj['count'] + 1;
+            await planetObj['recruits'].push(newArrayUser);
             const updatedUsers = JSON.stringify(parsedUsers);
             const updatedArray = JSON.stringify(parsedArray);
-            fs.writeFileSync('./data/homeworlds.json', updatedArray, (err) => {
+            fs.writeFileSync('./data/worlds.json', updatedArray, (err) => {
                 if (err) {
                     interaction.editReply('Critical Error!');
-                    throw new Error(`Couldn't write to homeworlds.json...`, err);
+                    throw new Error(`Couldn't write to worlds.json...`, err);
                 }
             });
-            console.log('Saved homeworlds.json!');
+            console.log('Saved worlds.json!');
             fs.writeFileSync('./data/users.json', updatedUsers, (err) => {
                 if (err) {
                     interaction.editReply('Critical Error!');
@@ -70,8 +71,8 @@ module.exports = {
             });
             console.log('Saved users.json!');
             const length = parsedUsers.length;
-            await interaction.editReply(`Homeworld set to ${interaction.options.getString('planet')}! Have a democratic day!`);
-            if (planetObj['declaredHome'].length > 1) {
+            await interaction.editReply(`Planet of residence set to ${interaction.options.getString('planet')}!\n(・ω<) - Thank you for registering with HeLCA'\n(•◡•) / - Have a democratic day!`);
+            if (planetObj['count'] > 1) {
                 await interaction.followUp(`## Congratulation Conscript #${length} on registering with HeCLA!\n### We hope to continue to service all your democratic needs.`);
             } else {
                 await interaction.followUp(`## Congratulations Conscript #${length}!\n### You are the first Helldiver from **${planetObj.name}** registered with HeLCA. We hope to continue to service all your democratic needs.`);

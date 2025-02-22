@@ -2,8 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
-const backup = require('./tools/backup.cjs');
-const grabber = require('./tools/apiGrabber.cjs');
+const backup = require('./backup.cjs');
+const grabber = require('./apiGrabber.cjs');
 
 dotenv.config();
 
@@ -52,7 +52,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             });
         } else {
             await interaction.reply({
-                content: 'Facist Termanids are chewing threw my wiring! Error...',
+                content: 'Fascist Termanids are chewing threw my wiring! Error...',
                 ephemeral: true,
             });
         }
@@ -60,13 +60,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 //  Autosave
-setInterval(backup.autoSave(), 1800000);
+//  setInterval(backup.autoSave(), 1800000);
 
 //  API Grabber
 const timer = 900000;
 //  Invasions
-grabber.getData('https://api.helldivers2.dev/api/v1/planet-events', 'events');
-setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer);
+grabber.grabAPI('https://api.helldivers2.dev/api/v1/planet-events', 'events');
+setInterval(() => grabber.grabAPI('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer);
 /*  Liberations
 grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns');
 setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns'), timer);
