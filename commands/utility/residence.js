@@ -50,7 +50,7 @@ module.exports = {
                 home: planet
             };
             const planetObj = await parsedArray.find(obj => obj.name === planet);
-            const newArrayUser = newUserUser[helcaId];
+            const newArrayUser = await newUserUser[helcaId];
             await parsedUsers.push(newUserUser);
             await planetObj['count'] + 1;
             await planetObj['recruits'].push(newArrayUser);

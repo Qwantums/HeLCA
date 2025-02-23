@@ -28,19 +28,20 @@ module.exports = {
         //  if (interaction.options.getSubcommand() === 'planet') {
         const casePlanet = interaction.options.getString('planet');
         const planet = casePlanet.toUpperCase();
-        const stringyArray = fs.readFileSync('./data/worlds.json', 'utf-8', (err) => {
+        fs.readFileSync('./data/worlds.json', 'utf-8', async (err, stringyArray) => {
             if (err) {
                 interaction.editReply('Critical Error!');
                 throw new Error('Couldnt read worlds.json...', err);
+            } else {
+                const parsedArray = JSON.parse(stringyArray);
+                const planetObj = parsedArray.find(obj => obj.name === planet);
+                if (planetObj === -1) {
+                    await interaction.editReply(`Could not find ${casePlanet}. Maybe you spelled it wrong?`);
+                } else {
+                    const recruits = planetObj['count'];
+                    await interaction.editReply(`## **${planet}**\n### Recruits: *${recruits}*`);
+                }
             }
         });
-        const parsedArray = JSON.parse(stringyArray);
-        const planetObj = parsedArray.find(obj => obj.name === planet);
-        if (planetObj === -1) {
-            await interaction.editReply(`Could not find ${casePlanet}. Maybe you spelled it wrong?`);
-        } else {
-            const recruits = planetObj['count'];
-            await interaction.editReply(`## **${planet}**\n### Recruits: *${recruits}*`);
-        }// else if (interaction.options.getSubcommand() === 'top')
     },
 };
