@@ -2,7 +2,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
-const backup = require('./backup.cjs');
 const grabber = require('./apiGrabber.cjs');
 
 dotenv.config();
@@ -63,10 +62,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 //  setInterval(backup.autoSave(), 1800000);
 
 //  API Grabber
-const timer = 900000;
+const timer = 30000;
 //  Invasions
-grabber.grabAPI('https://api.helldivers2.dev/api/v1/planet-events', 'events');
-setInterval(() => grabber.grabAPI('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer);
+setInterval(() => updateInvasions(), timer);
 /*  Liberations
 grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns');
 setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/campaigns', 'campaigns'), timer);
@@ -77,3 +75,63 @@ setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/assignment
 grabber.getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations');
 setInterval(() => grabber.getData('https://api.helldivers2.dev/api/v1/space-stations', 'stations'), timer);
 */
+
+async function updateInvasions() {
+    try {
+        console.log('Updating Invasions...');
+        const oldJson = JSON.parse(fs.readFileSync('./data/api/events.json', (err) => {
+            if (err) {
+                throw new Error('Could not read events.json...', err);
+            }
+        }));
+        const oldList = {};
+        if (!oldJson) {
+            console.log('First time grabbing invasions');
+        } else {
+            for (const planet of oldJson) {
+                const planetObj = await oldJson[planet];
+                const string = await planetObj['index'];
+                oldList.push(string);
+            }
+        }
+        await grabber.grabAPI('https://api.helldivers2.dev/api/v1/planet-events', 'events'), timer;
+        const newJson = JSON.parse(fs.readFileSync('./data/api/events.json', (err) => {
+            if (err) {
+                throw new Error('Could not read events.json...', err);
+            }
+        }));
+        const newList = {};
+        for (const planet of oldJson) {
+            const planetObj = await newJson[planet];
+            const string = await planetObj['index'];
+            newList.push(string);
+        }
+        if (oldList != newList) {
+            const worlds = JSON.parse(fs.readFileSync('./data/worlds.json', 'utf-8', (err) => {
+                if (err) {
+                    throw new Error('Could not read worlds.json...', err);
+                }
+            }));
+            for (const planet of newList) {
+                if (oldList.findIndex(obj => obj == newList[planet]) == -1) {
+                    //  Ping people!
+                    const eventPlanet = newJson.find(obj => obj.index == newList[planet]);
+                    const event = await eventPlanet['event'];
+                    const enemyType = await event['faction'];
+                    const planetObj = worlds.find(obj => obj.id == newList[planet]);
+                    const userList = await planetObj['recruits'];
+                    const planetName = await planetObj['name'];
+                    const message = `Helldiver! Your homeworld, ${planetName}, has come under attack by the ${enemyType}!`;
+                    for (const user of userList) {
+                        const userId = userList[user];
+                        client.users.send(userId, message);
+                    }
+                }
+            }
+        } else {
+            console.log('No new invasions. Thank democracy!');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};
